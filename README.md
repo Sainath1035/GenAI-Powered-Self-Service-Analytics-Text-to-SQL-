@@ -95,7 +95,6 @@ Text-to-SQL-Chatbot/
 ├── .env.example                             # Environment variables template
 ├── .gitignore                               # Git ignore rules
 ├── README.md                                # Project documentation
-├── INTERVIEW_PREP_GUIDE.md                  # Comprehensive interview cheat sheet & Q&A
 ├── Agentic Approach.ipynb                   # ReAct Agent implementation using LangGraph
 ├── Gemini Chatbot.ipynb                     # LCEL Text-to-SQL Chain using Google Gemini
 ├── Gemini Chatbot (including RAGAS).ipynb   # Pipeline evaluation using RAGAS framework

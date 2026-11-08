@@ -26,3 +26,8 @@ venv.bak/
 # OS Specific
 .DS_Store
 Thumbs.db
+
+# Private Notes & Preparation
+*interview*
+*INTERVIEW*
+*.html
