@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Master Guide - Text-to-SQL Chatbot</title>
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --primary-dark: #1557b0;
+            --surface: #ffffff;
+            --bg: #f8f9fa;
+            --text: #202124;
+            --text-secondary: #5f6368;
+            --border: #dadce0;
+            --code-bg: #f1f3f4;
+            --badge: #e8f0fe;
+            --badge-text: #1967d2;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+            margin: 0;
+            padding: 24px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--surface);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(60,64,67,0.3);
+        }
+        h1, h2, h3, h4 {
+            color: #1a73e8;
+            font-weight: 600;
+        }
+        h1 { border-bottom: 2px solid var(--border); padding-bottom: 12px; }
+        h2 { margin-top: 36px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+        .badge {
+            background: var(--badge);
+            color: var(--badge-text);
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+        blockquote {
+            background: #f1f8ff;
+            border-left: 4px solid var(--primary);
+            margin: 16px 0;
+            padding: 14px 20px;
+            border-radius: 0 8px 8px 0;
+            font-style: normal;
+        }
+        code, pre {
+            background: var(--code-bg);
+            font-family: Consolas, "Courier New", monospace;
+            border-radius: 6px;
+        }
+        code { padding: 2px 6px; font-size: 0.9em; }
+        pre { padding: 14px; overflow-x: auto; }
+        .qa-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .qa-card h4 {
+            margin: 0 0 10px 0;
+            color: #202124;
+            font-size: 1.05rem;
+        }
+        .qa-card p { margin: 0; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            text-align: left;
+        }
+        th { background: #f1f3f4; }
+        .print-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            float: right;
+        }
+        .print-btn:hover { background: var(--primary-dark); }
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; padding: 0; max-width: 100%; }
+            .print-btn { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+        <h1>🎓 Text-to-SQL Chatbot: Interview Master Guide</h1>
+        <div>
+            <span class="badge">Google Gemini 2.0 Flash</span>
+            <span class="badge">LangChain LCEL</span>
+            <span class="badge">LangGraph ReAct Agent</span>
+            <span class="badge">Streamlit UI</span>
+            <span class="badge">MySQL & SQLite</span>
+            <span class="badge">RAGAS Evaluation</span>
+        </div>
+
+        <h2>⏱️ 1. The 60-Second Elevator Pitch</h2>
+        <blockquote>
+            <strong>"Tell me about this project on your resume:"</strong><br><br>
+            "In this project, I built an end-to-end Generative AI Text-to-SQL analytics system that allows non-technical business stakeholders—such as product managers, sales executives, and operations leads—to query complex relational databases using natural language instead of writing SQL.<br><br>
+            I integrated Google Gemini with LangChain and LangGraph to dynamically inspect database schemas, translate plain-English questions into dialect-accurate SQL, execute queries safely against MySQL and SQLite, and synthesize tabular data into concise conversational insights.<br><br>
+            To address latency and reasoning needs, I engineered a dual-mode engine: a fast direct LCEL chain for high-frequency queries, and an autonomous ReAct agent with syntax checking and self-correction for exploratory multi-table analysis. Finally, I benchmarked accuracy using the RAGAS evaluation framework and deployed a full interactive Streamlit interface."
+        </blockquote>
+
+        <h2>🏗️ 2. Architectural Walkthrough</h2>
+        <p>Explain this 4-step pipeline to technical interviewers:</p>
+        <ol>
+            <li><strong>Dynamic Schema Extraction:</strong> Extracts table names, DDL, and sample rows dynamically using SQLAlchemy's <code>SQLDatabase.get_table_info()</code>.</li>
+            <li><strong>Prompt Construction & Guardrails:</strong> Injects schema and user questions into structured prompt templates, instructing Gemini to generate single-pass SQL with strict stop tokens (<code>\nSQLResult:</code>).</li>
+            <li><strong>Dual Execution Engine:</strong>
+                <ul>
+                    <li><strong>LCEL Direct Chain:</strong> Fast 1-pass execution for simple queries.</li>
+                    <li><strong>LangGraph ReAct Agent:</strong> Utilizes <code>SQLDatabaseToolkit</code> (4 tools: <code>ListSQLDatabaseTool</code>, <code>InfoSQLDatabaseTool</code>, <code>QuerySQLCheckerTool</code>, <code>QuerySQLDatabaseTool</code>) for iterative reasoning and automated error recovery.</li>
+                </ul>
+            </li>
+            <li><strong>Synthesis & Presentation:</strong> An LLM synthesizer turns raw database rows into conversational summaries, presented in a Streamlit chat UI alongside SQL queries and interactive dataframes.</li>
+        </ol>
+
+        <h2>⚖️ 3. Direct Chain vs. ReAct Agent</h2>
+        <table>
+            <tr>
+                <th>Feature</th>
+                <th>LCEL Direct Chain</th>
+                <th>LangGraph ReAct Agent</th>
+            </tr>
+            <tr>
+                <td><strong>Latency</strong></td>
+                <td>1 – 2 seconds (Fast)</td>
+                <td>4 – 8 seconds (Multi-step)</td>
+            </tr>
+            <tr>
+                <td><strong>Inference Calls</strong></td>
+                <td>2 fixed calls</td>
+                <td>3 to 7 iterative tool calls</td>
+            </tr>
+            <tr>
+                <td><strong>Self-Correction</strong></td>
+                <td>Fails if query has syntax error</td>
+                <td><strong>Reads database error & self-corrects</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Best For</strong></td>
+                <td>Known queries, simple aggregations</td>
+                <td>Exploratory analytics, ambiguous joins</td>
+            </tr>
+        </table>
+
+        <h2>🛡️ 4. Security & Guardrails (Crucial for Interviews)</h2>
+        <div class="qa-card">
+            <h4>Q: How do you prevent SQL Injection and destructive commands (DROP, DELETE, UPDATE)?</h4>
+            <p><strong>Answer:</strong> We enforce security at 4 independent layers:</p>
+            <ul>
+                <li><strong>Read-Only Database Role:</strong> The database connection uses credentials strictly granted <code>SELECT</code> privileges. Destructive statements are blocked directly by the database engine.</li>
+                <li><strong>Prompt-Level Constraints:</strong> The system prompt enforces outputting read-only queries only.</li>
+                <li><strong>AST Parsing:</strong> Validates with <code>sqlparse</code> that the root statement is strictly a <code>SELECT</code>.</li>
+                <li><strong>Execution Limits:</strong> Enforces <code>top_k=5</code> to prevent denial-of-service memory exhaustion.</li>
+            </ul>
+        </div>
+
+        <div class="qa-card">
+            <h4>Q: How do you handle schema scaling for databases with 100+ tables?</h4>
+            <p><strong>Answer:</strong> We implement <strong>Schema RAG</strong>. We store table descriptions and column metadata as vector embeddings in ChromaDB/FAISS. When a user asks a question, we semantically retrieve only the top 3-5 relevant table schemas and pass them to the LLM, avoiding prompt bloat and the "needle-in-a-haystack" degradation.</p>
+        </div>
+
+        <div class="qa-card">
+            <h4>Q: How did you evaluate the system with RAGAS?</h4>
+            <p><strong>Answer:</strong> We constructed an <code>EvaluationDataset</code> of <code>SingleTurnSample</code> items containing user inputs, retrieved schemas, generated SQL, and ground-truth references. We measured <strong>Context Precision</strong> (schema retrieval quality), <strong>RubricsScore</strong> (1-5 helpfulness rubric evaluated by an evaluator LLM), and <strong>AspectCritic</strong> (maliciousness/prompt injection detection).</p>
+        </div>
+
+        <div class="qa-card">
+            <h4>Q: Why Google Gemini 2.0 Flash?</h4>
+            <p><strong>Answer:</strong> Extremely fast Time-to-First-Token (TTFT), high instruction-following accuracy for structured SQL generation, low token cost for enterprise usage, and a massive context window for large schema contexts.</p>
+        </div>
+
+        <h2>💻 5. Quick Commands</h2>
+        <pre><code># 1. Initialize Database (SQLite local out-of-the-box):
+python setup_database.py --db sqlite
+
+# 2. Run the Streamlit Application:
+streamlit run app.py</code></pre>
+    </div>
+</body>
+</html>
